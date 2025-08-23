@@ -1,0 +1,26 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/Supreethkumarjagarlamudi/courseVitaHackathon#readme",
+  "bugs": {
+    "url": "https://github.com/Supreethkumarjagarlamudi/courseVitaHackathon/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Supreethkumarjagarlamudi/courseVitaHackathon.git"
+  },
+  "license": "ISC",
+  "author": "supreeth kumar J",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "mongodb": "^6.18.0",
+    "mongoose": "^8.18.0"
+  }
+}
