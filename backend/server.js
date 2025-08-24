@@ -90,9 +90,10 @@ app.get("/", (req, res) => {
     res.status(200).json({ status: "OK", message: "Server is running" });
 })
 
-app.use('*', (req, res) => {
-    res.status(404).json({ error: 'Route not found' });
+app.use("/api/*", (req, res) => {
+  res.status(404).json({ error: "API route not found" });
 });
+
 
 
 
