@@ -83,8 +83,8 @@ app.use('*', (req, res) => {
     res.status(404).json({ error: 'Route not found' });
 });
 
-app.use("/", (req, res) => {
-    res.json({ status: "OK", message: "Server is running" });
+app.get("/", (req, res) => {
+    res.status(200).json({ status: "OK", message: "Server is running" });
 })
 
 app.use((err, req, res, next) => {
