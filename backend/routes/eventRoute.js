@@ -17,7 +17,7 @@ import {
 const eventRouter = express.Router();
 
 eventRouter.get("/", (req, res) => {
-  res.json({ message: "pong" });
+  return res.json({ message: "pong" });
 });
 
 eventRouter.get('/events', getEvents);
