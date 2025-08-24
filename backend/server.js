@@ -75,17 +75,18 @@ app.use("/api", rsvpRouter)
 app.use("/api", uploadRouter)
 app.use("/api/payment", paymentRouter)
 
-// Health check endpoint
 app.get("/health", (req, res) => {
     res.json({ status: "OK", message: "Server is running" });
 });
 
-// 404 handler
 app.use('*', (req, res) => {
     res.status(404).json({ error: 'Route not found' });
 });
 
-// Error handling middleware (must be last)
+app.use("/", (req, res) => {
+    res.json({ status: "OK", message: "Server is running" });
+})
+
 app.use((err, req, res, next) => {
     console.error('Error:', err);
     res.status(500).json({ 
