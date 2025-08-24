@@ -87,6 +87,9 @@ app.get('/', (req, res) => {
   res.status(200).json({ status: 'OK', message: 'Server is running' })
 })
 
+app.get("/ping", (req, res) => {
+  res.json({ message: "pong" });
+});
 
 app.use((req, res, next) => {
   if (!req.path.startsWith("/api")) {
