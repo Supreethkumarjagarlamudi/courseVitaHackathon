@@ -20,15 +20,27 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cors({
     origin: ["http://localhost:3001", "http://localhost:3002", "http://localhost:5173", "http://localhost:5174", "https://occasioclients.vercel.app", "https://occasioadmin.vercel.app"],
-    credentials: true
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token', 'Origin', 'Accept'],
+    exposedHeaders: ['Content-Range', 'X-Content-Range'],
+    preflightContinue: false,
+    optionsSuccessStatus: 200
 }))
 
+app.options('*', (req, res) => {
+    res.header('Access-Control-Allow-Origin', req.headers.origin);
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-auth-token, Origin, Accept');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.status(200).end();
+});
 app.use(session({
     secret: process.env.SESSION_SECRET || 'test',
     resave: false,
     saveUninitialized: false,
     cookie: { 
-        secure: false,
+        secure: true,
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000
     }
@@ -36,6 +48,19 @@ app.use(session({
 
 app.use(passport.initialize())
 app.use(passport.session())
+
+app.use((err, req, res, next) => {
+    console.error('Error:', err);
+    res.status(500).json({ 
+        error: 'Internal Server Error',
+        message: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong'
+    });
+});
+
+// 404 handler
+app.use('*', (req, res) => {
+    res.status(404).json({ error: 'Route not found' });
+});
 
 app.use("/api/admin", adminRouter)
 app.use("/api/auth", authRouter)
