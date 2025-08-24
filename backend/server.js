@@ -12,22 +12,37 @@ import passport from 'passport';
 import cors from 'cors';
 
 const app = express();
-connectDB()
+
+// Load environment variables first
 dotenv.config({quiet: true})
+
+// Connect to database (only in development, Vercel handles this differently)
+if (process.env.NODE_ENV !== 'production') {
+    connectDB()
+}
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// CORS configuration
 app.use(cors({
-    origin: ["http://localhost:3001", "http://localhost:3002", "http://localhost:5173", "http://localhost:5174", "https://occasioclients.vercel.app", "https://occasioadmin.vercel.app, https://occasiobackend-nu.vercel.app/"],
+    origin: [
+        "http://localhost:3001", 
+        "http://localhost:3002", 
+        "http://localhost:5173", 
+        "http://localhost:5174", 
+        "https://occasioclients.vercel.app", 
+        "https://occasioadmin.vercel.app"
+    ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token', 'Origin', 'Accept'],
     exposedHeaders: ['Content-Range', 'X-Content-Range'],
     preflightContinue: false,
     optionsSuccessStatus: 200
-}))
+}));
 
+// Handle preflight requests
 app.options('*', (req, res) => {
     res.header('Access-Control-Allow-Origin', req.headers.origin);
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
@@ -35,20 +50,42 @@ app.options('*', (req, res) => {
     res.header('Access-Control-Allow-Credentials', 'true');
     res.status(200).end();
 });
+
+// Session configuration
 app.use(session({
     secret: process.env.SESSION_SECRET || 'test',
     resave: false,
     saveUninitialized: false,
     cookie: { 
-        secure: true,
+        secure: process.env.NODE_ENV === 'production',
         httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000
+        maxAge: 24 * 60 * 60 * 1000,
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
     }
 }));
 
 app.use(passport.initialize())
 app.use(passport.session())
 
+// Routes
+app.use("/api/admin", adminRouter)
+app.use("/api/auth", authRouter)
+app.use("/api", eventRouter)
+app.use("/api", rsvpRouter)
+app.use("/api", uploadRouter)
+app.use("/api/payment", paymentRouter)
+
+// Health check endpoint
+app.get("/health", (req, res) => {
+    res.json({ status: "OK", message: "Server is running" });
+});
+
+// 404 handler
+app.use('*', (req, res) => {
+    res.status(404).json({ error: 'Route not found' });
+});
+
+// Error handling middleware (must be last)
 app.use((err, req, res, next) => {
     console.error('Error:', err);
     res.status(500).json({ 
@@ -57,23 +94,12 @@ app.use((err, req, res, next) => {
     });
 });
 
-// 404 handler
-app.use('*', (req, res) => {
-    res.status(404).json({ error: 'Route not found' });
-});
+// For Vercel serverless functions, export the app
+export default app;
 
-app.use("/api/admin", adminRouter)
-app.use("/api/auth", authRouter)
-app.use("/api", eventRouter)
-app.use("/api", rsvpRouter)
-app.use("/api", uploadRouter)
-app.use("/api/payment", paymentRouter)
-
-app.get("/health", (req, res) => {
-    res.json({ status: "OK", message: "Server is running" });
-});
-
-
-app.listen(process.env.PORT || 3000, () => {
-    console.log(`Server running at PORT: ${process.env.PORT || 3000}`);
-})
+// Only listen in development
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(process.env.PORT || 3000, () => {
+        console.log(`Server running at PORT: ${process.env.PORT || 3000}`);
+    });
+}
