@@ -19,12 +19,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cors({
-    origin: ["http://localhost:3001", "http://localhost:3002", "http://localhost:5173", "http://localhost:5174"],
+    origin: ["http://localhost:3001", "http://localhost:3002", "http://localhost:5173", "http://localhost:5174", "https://occasioclients.vercel.app", "https://occasioadmin.vercel.app"],
     credentials: true
 }))
 
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'your-secret-key',
+    secret: process.env.SESSION_SECRET || 'test',
     resave: false,
     saveUninitialized: false,
     cookie: { 
