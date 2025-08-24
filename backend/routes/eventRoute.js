@@ -16,11 +16,10 @@ import {
 
 const eventRouter = express.Router();
 
-eventRouter.get("/", (req, res) => {
-  return res.json({ message: "pong" });
-});
-
-eventRouter.get('/events', getEvents);
+eventRouter.get('/events',(req, res, next) => {
+  console.log("🚀 Hit /api/events");
+  next();
+}, getEvents);
 eventRouter.get('/events/categories', getEventCategories);
 eventRouter.get('/events/:id', getEventById);
 
