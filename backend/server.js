@@ -44,7 +44,9 @@ app.use(
       'Authorization',
       'x-auth-token',
       'Origin',
-      'Accept'
+      'Accept',
+      'x-admin-email',
+      'x-admin-password'
     ],
     exposedHeaders: ['Content-Range', 'X-Content-Range'],
     optionsSuccessStatus: 200
@@ -86,8 +88,6 @@ app.get('/health', (req, res) => {
 app.get('/', (req, res) => {
   res.status(200).json({ status: 'OK', message: 'Server is running' })
 })
-
-
 
 app.use((req, res, next) => {
   if (!req.path.startsWith("/api")) {

@@ -48,7 +48,7 @@ const Attendees = ({ backendUrl }) => {
       setLoading(true);
       setError('');
 
-      const adminEmail = import.meta.env.VITE_ADMIN_EMAIL || 'admin@coursevita.com';
+      const adminEmail = import.meta.env.VITE_ADMIN_EMAIL || 'admin@Occasio.com';
       const adminPassword = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123456';
 
       const response = await fetch(`${backendUrl}/api/admin/events`, {
