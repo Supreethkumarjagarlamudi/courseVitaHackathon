@@ -22,10 +22,9 @@ connectDB()
 const allowedOrigins = [
   'http://localhost:3001',
   'http://localhost:3002',
-  'http://localhost:5173',
-  'http://localhost:5174',
   'https://occasioclients.vercel.app',
-  'https://occasioadmin.vercel.app'
+  'https://occasioadmin.vercel.app',
+  'https://occasio-backend-cyop.onrender.com'
 ]
 
 app.use(
