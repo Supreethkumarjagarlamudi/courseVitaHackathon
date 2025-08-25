@@ -17,8 +17,8 @@ authRouter.post("/login", isNotLoggedIn, localAuth);
 
 authRouter.get("/googleOauth", isNotLoggedIn, passport.authenticate('google', {scope: ['email', 'profile']}));
 authRouter.get("/google/callback", passport.authenticate('google', {
-    successRedirect: "http://localhost:3001/",
-    failureRedirect: "http://localhost:3001/login?auth=false"
+    successRedirect: "https://occasioclients.vercel.app",
+    failureRedirect: "https://occasioclients.vercel.app/login?auth=false"
 }));
 
 authRouter.get("/me", requireAuth, getCurrentUser);
